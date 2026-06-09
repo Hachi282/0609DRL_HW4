@@ -14,11 +14,15 @@
 ├── index.html       # 互動式 Demo 網頁（系統運行模擬儀表板）
 ├── style.css        # Demo 網頁樣式表（現代化深色科技感設計）
 ├── script.js        # Demo 網頁前端邏輯（模擬 ReAct 控制台與真實定價計算）
-├── report.md        # [必交 1] 2-5頁 A4 規格書面設計報告 (繁體中文)
+├── report.md        # [必交 1] 2-5頁 A4 規格書面設計報告 (Markdown 格式)
+├── report.pdf       # [必交 1] 2-5頁 A4 規格書面設計報告 (PDF 格式，內置字體無亂碼)
+├── convert_pdf.py   # 自動將 report.md 轉換為 report.pdf 的 Python 腳本工具
 ├── infographic.png  # [必交 2] 系統架構、記憶體與工具交互數據流資訊圖表
 ├── log.md           # [必交 3] AI 輔助設計與兩輪架構迭代過程日誌
-└── README.md        # 專案總覽、功能細節與 GitHub Pages 發布指南 (本文件)
+└── README.md        # 專案總覽與功能細節說明 (本文件)
 ```
+
+> **PDF 重新編譯說明**：如果您修改了 `report.md` 的內容，只要在終端機中運行 `python convert_pdf.py`，系統將自動調用 Windows 內建的 Microsoft Edge 瀏覽器，重新編譯並生成最新版的 `report.pdf`。
 
 ---
 
