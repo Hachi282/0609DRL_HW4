@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopIntelAgent - AI Harness 互動分析演示儀表板</title>
+    <!-- 引入 Google Fonts Outfit 與 Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome 圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 側邊欄 Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-brain-circuit logo-icon"></i>
+                <span class="logo-text">ShopIntel</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active"><i class="fa-solid fa-chart-line"></i>定價分析模擬</a>
+                <a href="report.md" target="_blank" class="nav-item"><i class="fa-solid fa-file-invoice"></i>書面報告 (Markdown)</a>
+                <a href="log.md" target="_blank" class="nav-item"><i class="fa-solid fa-terminal"></i>開發日誌 (Log)</a>
+                <a href="https://github.com/Hachi282/0609DRL_HW4" target="_blank" class="nav-item"><i class="fa-brands fa-github"></i>GitHub 倉庫</a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="course-info">
+                    <p class="course-title">DRL Homework 4</p>
+                    <p class="author">AI Harness Systems</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主要工作區 -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-title">
+                    <h1>ShopIntelAgent 模擬器</h1>
+                    <p>自主電商市場情報與競品定價分析助理 (AI Harness Demo)</p>
+                </div>
+                <div class="system-status">
+                    <span class="status-indicator online"></span>
+                    <span class="status-text">Harness System: Active</span>
+                </div>
+            </header>
+
+            <!-- 內容版面 -->
+            <div class="grid-container">
+                <!-- 左側：設定控制面板 -->
+                <section class="card control-panel">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-sliders"></i> 商家商品基本參數設定</h2>
+                    </div>
+                    <form id="pricing-form" class="control-form">
+                        <div class="form-group">
+                            <label for="product-name">自家商品名稱 <span class="required">*</span></label>
+                            <input type="text" id="product-name" value="Smart LED Desk Lamp Pro" required placeholder="例如: 智能 LED 護眼檯燈 Pro">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="product-cost">進貨/生產成本 (USD) <span class="required">*</span></label>
+                                <div class="input-prefix-container">
+                                    <span class="input-prefix">$</span>
+                                    <input type="number" id="product-cost" value="25.00" step="0.01" min="0.1" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="min-margin">期望最低毛利率 <span class="required">*</span></label>
+                                <div class="input-suffix-container">
+                                    <input type="number" id="min-margin" value="20" min="0" max="500" required>
+                                    <span class="input-suffix">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="search-keyword">搜尋關鍵字 (對標競品)</label>
+                            <input type="text" id="search-keyword" value="Smart LED Desk Lamp" required placeholder="輸入搜尋關鍵字">
+                        </div>
+                        <div class="form-group">
+                            <label>產品定位策略</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="positioning" value="budget">
+                                    <span class="radio-custom-btn">低價對標 (Budget)</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="positioning" value="mid_range" checked>
+                                    <span class="radio-custom-btn">中值對標 (Mid-Range)</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="positioning" value="premium">
+                                    <span class="radio-custom-btn">高質感溢價 (Premium)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 錯誤模擬設定（展現 Harness 容錯性） -->
+                        <div class="form-group toggle-group">
+                            <label for="simulate-error" class="toggle-label-container">
+                                <span class="toggle-text-main">模擬網頁爬取失敗 (HTTP 503)</span>
+                                <span class="toggle-desc">勾選後系統將展現自動 Retry 與 Skip 的編排機制</span>
+                            </label>
+                            <input type="checkbox" id="simulate-error" class="toggle-input">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="start-btn">
+                            <i class="fa-solid fa-play"></i> 開始自主編排分析
+                        </button>
+                    </form>
+                </section>
+
+                <!-- 右側：AI Harness 控制台 (實時運作日誌) -->
+                <section class="card console-panel">
+                    <div class="card-header console-header">
+                        <h2><i class="fa-solid fa-terminal"></i> AI Harness 執行軌跡控制台</h2>
+                        <span class="badge" id="step-badge">IDLE</span>
+                    </div>
+                    <div class="console-body" id="console-output">
+                        <div class="console-placeholder">
+                            <i class="fa-solid fa-chevron-right console-prompt"></i> 系統就緒。請在左側輸入商品參數，並點擊「開始自主編排分析」來啟動 AI Agent。
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 分析結果區域 (初始隱藏，完成後淡入) -->
+            <section class="report-section" id="report-results" style="display: none;">
+                <div class="section-title-container">
+                    <h2><i class="fa-solid fa-file-shield"></i> ShopIntelAgent 自主市場情報與定價報告</h2>
+                    <button class="btn btn-secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> 列印報告</button>
+                </div>
+
+                <div class="report-grid">
+                    <!-- 核心定價決策 -->
+                    <div class="card pricing-card">
+                        <div class="metric-container">
+                            <div class="metric-box">
+                                <span class="metric-label">進貨成本</span>
+                                <span class="metric-value" id="res-cost">$25.00</span>
+                            </div>
+                            <div class="metric-box highlight">
+                                <span class="metric-label">建議零售價</span>
+                                <span class="metric-value text-gradient" id="res-price">$41.99</span>
+                            </div>
+                            <div class="metric-box">
+                                <span class="metric-label">預估毛利率</span>
+                                <span class="metric-value text-success" id="res-margin">67.9%</span>
+                            </div>
+                        </div>
+                        <div class="pricing-explanation">
+                            <h3><i class="fa-solid fa-circle-info"></i> 定價演算法決策依據</h3>
+                            <p id="pricing-explain-text">定價基於中高檔市場定位。已濾除極端離群值，並對標競品功能缺陷。建議定價高於毛利底線 ($30.00)，在市場競爭力與利潤之間取得最佳平衡。</p>
+                        </div>
+                    </div>
+
+                    <!-- SWOT 分析卡片 -->
+                    <div class="card swot-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-scale-balanced"></i> SWOT 市場競爭力矩陣</h3>
+                        </div>
+                        <div class="swot-grid">
+                            <div class="swot-item s">
+                                <h4>優勢 (Strengths)</h4>
+                                <ul id="swot-s">
+                                    <li>全鋁合金金屬質感外殼（對標 Philips 塑料感）</li>
+                                    <li>實體有線與雙頻 Wi-Fi 雙控制（對標 Philips 斷線問題）</li>
+                                </ul>
+                            </div>
+                            <div class="swot-item w">
+                                <h4>劣勢 (Weaknesses)</h4>
+                                <ul id="swot-w">
+                                    <li>新品牌市場知名度較低，行銷成本可能偏高</li>
+                                    <li>產品重量較重，可能增加國際物流成本</li>
+                                </ul>
+                            </div>
+                            <div class="swot-item o">
+                                <h4>機會 (Opportunities)</h4>
+                                <ul id="swot-o">
+                                    <li>Philips 消費者極度不滿 Wi-Fi 連線問題，可強打「連線零中斷」主視覺</li>
+                                    <li>消費者對廉價塑料感檯燈產生審美疲勞，金屬檯燈需求上升</li>
+                                </ul>
+                            </div>
+                            <div class="swot-item t">
+                                <h4>威脅 (Threats)</h4>
+                                <ul id="swot-t">
+                                    <li>CheapLite 等白牌檯燈大打 $20 以下的價格戰，擠壓低端市場</li>
+                                    <li>競品可能迅速升級 Wi-Fi 晶片推出改良版</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 獨特賣點與定價風險防護網 -->
+                    <div class="card details-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-shield-halved"></i> 差異化賣點 (USP) 與 安全護欄 (Guardrails)</h3>
+                        </div>
+                        <div class="details-split">
+                            <div class="usp-list">
+                                <h4>核心行銷賣點建議 (USP)</h4>
+                                <ul>
+                                    <li><i class="fa-solid fa-check-double text-success"></i> <strong>連線零死角</strong>：強調實體有線控制備份與雙頻 Wi-Fi。</li>
+                                    <li><i class="fa-solid fa-check-double text-success"></i> <strong>金屬美學</strong>：以「全鋁合金抗磨损底座」對標競品塑料感。</li>
+                                    <li><i class="fa-solid fa-check-double text-success"></i> <strong>健康護眼</strong>：800 流明無頻閃對標低端白牌檯燈。</li>
+                                </ul>
+                            </div>
+                            <div class="guardrail-status-box">
+                                <h4>Harness 安全護欄檢測狀態</h4>
+                                <div class="status-row">
+                                    <span class="status-item"><i class="fa-solid fa-circle-check text-success"></i> 最低毛利檢測: 通過</span>
+                                    <span class="status-item"><i class="fa-solid fa-circle-check text-success"></i> 爬蟲 Robots.txt: 符合</span>
+                                    <span class="status-item"><i class="fa-solid fa-circle-check text-success"></i> PII 隱私去識別化: 完成</span>
+                                    <span class="status-item"><i class="fa-solid fa-circle-check text-success"></i> 工具防死循環限制: 正常</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
