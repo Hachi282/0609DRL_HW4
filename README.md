@@ -63,7 +63,11 @@
 
 ## 🔍 AI Harness 系統架構細節剖析
 
-本系統設計嚴格遵循現代 AI 編排系統最佳實踐，以下為系統組件的詳細運作機制：
+本系統設計嚴格遵循現代 AI 編排系統最佳實踐。以下為本專案的系統架構、記憶體與工具交互數據流資訊圖表：
+
+![ShopIntelAgent System Architecture](infographic.png)
+
+以下為各系統組件的詳細運作機制：
 
 ### 1. 系統大腦：LLM System Controller (模型無關設計)
 大語言模型（如 GPT-4 / Gemini / Claude 等支援工具調用的模型）接收使用者 Prompt，將其拆解為搜尋、爬蟲、分析與計算的步驟。它不進行最終的定價數字加減乘除，而是生成 JSON 調用參數。
